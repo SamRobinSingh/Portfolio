@@ -1,45 +1,96 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Mail, Phone, MapPin, Github, Linkedin, ChevronDown } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import ParticleField from "./ParticleField";
 
 const HeroSection = () => {
+  const { scrollY } = useScroll();
+  const bgY = useTransform(scrollY, [0, 600], [0, 200]);
+  const textOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const textY = useTransform(scrollY, [0, 400], [0, -60]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <img src={heroBg} alt="" className="w-full h-full object-cover opacity-40" />
+      {/* Parallax Background */}
+      <motion.div className="absolute inset-0" style={{ y: bgY }}>
+        <img src={heroBg} alt="" className="w-full h-full object-cover opacity-40 scale-110" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
-      </div>
+      </motion.div>
 
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+      {/* Animated particles */}
+      <ParticleField count={50} />
+
+      {/* Radial glow behind text */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
+        style={{
+          background: "radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 70%)",
+        }}
+        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <motion.div
+        className="relative z-10 text-center max-w-4xl mx-auto px-4"
+        style={{ opacity: textOpacity, y: textY }}
+      >
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="font-mono text-primary tracking-widest uppercase text-sm mb-4">
+          <motion.p
+            className="font-mono text-primary tracking-widest uppercase text-sm mb-4"
+            initial={{ opacity: 0, letterSpacing: "0em" }}
+            animate={{ opacity: 1, letterSpacing: "0.2em" }}
+            transition={{ duration: 1.2, delay: 0.3 }}
+          >
             AI & Machine Learning Engineer
-          </p>
+          </motion.p>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
-            <span className="text-gradient">Sam Robin</span>
+            <motion.span
+              className="text-gradient-animated inline-block"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Sam Robin
+            </motion.span>
             <br />
-            <span className="text-foreground">Singh E</span>
+            <motion.span
+              className="text-foreground inline-block"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              Singh E
+            </motion.span>
           </h1>
-          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
+          <motion.p
+            className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.7 }}
+          >
             Building end-to-end AI solutions — from deep learning & computer vision
             to edge deployment & intelligent automation.
-          </p>
+          </motion.p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.9 }}
           className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground"
         >
-          <a href="mailto:samrobinsinghe303@gmail.com" className="flex items-center gap-2 hover:text-primary transition-colors">
+          <motion.a
+            href="mailto:samrobinsinghe303@gmail.com"
+            className="flex items-center gap-2 hover:text-primary transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <Mail className="w-4 h-4" /> samrobinsinghe303@gmail.com
-          </a>
+          </motion.a>
           <span className="hidden md:inline text-border">|</span>
           <span className="flex items-center gap-2">
             <Phone className="w-4 h-4" /> +91 9360877226
@@ -51,32 +102,51 @@ const HeroSection = () => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 1.1 }}
           className="flex items-center justify-center gap-4 mt-8"
         >
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
-            className="p-3 rounded-lg border border-border hover:border-primary hover:glow-border transition-all">
-            <Linkedin className="w-5 h-5 text-foreground" />
-          </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer"
-            className="p-3 rounded-lg border border-border hover:border-primary hover:glow-border transition-all">
-            <Github className="w-5 h-5 text-foreground" />
-          </a>
+          {[
+            { href: "https://linkedin.com", icon: Linkedin },
+            { href: "https://github.com", icon: Github },
+          ].map((social, i) => (
+            <motion.a
+              key={social.href}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-lg border border-border hover:border-primary transition-all duration-300"
+              whileHover={{
+                scale: 1.15,
+                boxShadow: "0 0 20px hsl(var(--glow) / 0.3)",
+              }}
+              whileTap={{ scale: 0.9 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2 + i * 0.1 }}
+            >
+              <social.icon className="w-5 h-5 text-foreground" />
+            </motion.a>
+          ))}
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 1.5 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
-          <a href="#about" className="animate-float block">
-            <ChevronDown className="w-6 h-6 text-primary animate-pulse-glow" />
-          </a>
+          <motion.a
+            href="#about"
+            className="block"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ChevronDown className="w-6 h-6 text-primary" />
+          </motion.a>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 };

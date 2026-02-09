@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Trophy } from "lucide-react";
+import { Trophy, Star } from "lucide-react";
+import SectionHeading from "./SectionHeading";
 
 const awards = [
   { title: "DataVista YUKTI '25 - Third Position", issuer: "Thiagarajar School of Management", date: "Feb 2025" },
@@ -10,44 +11,92 @@ const awards = [
   { title: "Project Presentation - First Position", issuer: "SKIT - YESIST'12", date: "Mar 2024" },
 ];
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+  },
+};
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
 const AwardsSection = () => {
   return (
-    <section id="awards" className="section-padding">
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="font-mono text-primary text-sm tracking-widest uppercase mb-3">Recognition</h2>
-          <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-12">Awards & Achievements</h3>
-        </motion.div>
+    <section id="awards" className="section-padding relative">
+      <div
+        className="absolute inset-0 opacity-30 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 70% 50% at 30% 60%, hsl(var(--primary) / 0.04) 0%, transparent 70%)",
+        }}
+      />
 
-        <div className="grid gap-4 sm:grid-cols-2">
+      <div className="max-w-4xl mx-auto relative">
+        <SectionHeading label="Recognition" title="Awards & Achievements" />
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          className="grid gap-4 sm:grid-cols-2"
+        >
           {awards.map((award, i) => (
             <motion.div
               key={award.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="glass rounded-xl p-5 hover:glow-border transition-all group"
+              variants={cardVariant}
+              whileHover={{
+                y: -4,
+                boxShadow: "0 0 25px hsl(var(--glow) / 0.15), 0 10px 30px hsl(220 20% 0% / 0.3)",
+              }}
+              className="glass-hover rounded-xl p-5 group relative overflow-hidden"
             >
-              <Trophy className="w-4 h-4 text-primary mb-2 group-hover:scale-110 transition-transform" />
-              <h4 className="text-foreground font-semibold text-sm mb-1">{award.title}</h4>
-              <p className="text-muted-foreground text-xs">{award.issuer}</p>
-              <p className="text-muted-foreground text-xs font-mono mt-1">{award.date}</p>
+              {/* Subtle background number */}
+              <span className="absolute top-2 right-3 text-6xl font-bold text-primary/[0.03] font-mono select-none">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+
+              <div className="relative">
+                <motion.div
+                  whileHover={{ rotate: 20, scale: 1.2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <Trophy className="w-5 h-5 text-primary mb-3" />
+                </motion.div>
+                <h4 className="text-foreground font-semibold text-sm mb-1 group-hover:text-primary transition-colors duration-300">
+                  {award.title}
+                </h4>
+                <p className="text-muted-foreground text-xs">{award.issuer}</p>
+                <p className="text-muted-foreground text-xs font-mono mt-1">{award.date}</p>
+              </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-8 text-center text-muted-foreground text-sm font-mono"
+          transition={{ delay: 0.5 }}
+          className="mt-10 text-center"
         >
-          750+ problems solved on LeetCode, CodeChef & HackerRank
+          <motion.div
+            className="inline-flex items-center gap-2 glass-hover rounded-full px-6 py-3"
+            whileHover={{ scale: 1.05 }}
+          >
+            <Star className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground text-sm font-mono">
+              750+ problems solved on LeetCode, CodeChef & HackerRank
+            </span>
+          </motion.div>
         </motion.div>
       </div>
     </section>
