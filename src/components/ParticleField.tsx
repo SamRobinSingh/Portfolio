@@ -8,7 +8,14 @@ interface Particle {
   size: number;
   duration: number;
   delay: number;
+  color: string;
 }
+
+const colors = [
+  "hsl(var(--primary) / 0.3)",
+  "hsl(var(--accent) / 0.25)",
+  "hsl(var(--warm) / 0.2)",
+];
 
 const ParticleField = ({ count = 40 }: { count?: number }) => {
   const particles = useMemo<Particle[]>(() => {
@@ -19,6 +26,7 @@ const ParticleField = ({ count = 40 }: { count?: number }) => {
       size: Math.random() * 3 + 1,
       duration: Math.random() * 8 + 6,
       delay: Math.random() * 5,
+      color: colors[i % colors.length],
     }));
   }, [count]);
 
@@ -27,12 +35,13 @@ const ParticleField = ({ count = 40 }: { count?: number }) => {
       {particles.map((p) => (
         <motion.div
           key={p.id}
-          className="absolute rounded-full bg-primary/30"
+          className="absolute rounded-full"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
+            background: p.color,
           }}
           animate={{
             y: [0, -30, 0],

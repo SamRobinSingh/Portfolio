@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Mail, Linkedin, Github, ArrowUp } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -51,14 +51,18 @@ const Navbar = () => {
               transition={{ delay: 0.6 + i * 0.08 }}
             >
               {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full" />
             </motion.a>
           ))}
         </div>
         <motion.a
           href="mailto:samrobinsinghe303@gmail.com"
-          className="text-sm px-4 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity"
-          whileHover={{ scale: 1.05, boxShadow: "0 0 20px hsl(var(--glow) / 0.3)" }}
+          className="text-sm px-4 py-1.5 rounded-lg font-semibold transition-all"
+          style={{
+            background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))",
+            color: "hsl(var(--primary-foreground))",
+          }}
+          whileHover={{ scale: 1.05, boxShadow: "0 0 25px hsl(var(--glow) / 0.3)" }}
           whileTap={{ scale: 0.95 }}
         >
           Contact
@@ -78,7 +82,9 @@ const FooterSection = () => {
   }, []);
 
   return (
-    <footer className="border-t border-border py-12 px-4 relative">
+    <footer className="relative py-12 px-4">
+      <div className="section-divider absolute top-0 left-[10%] right-[10%]" />
+
       <div className="max-w-4xl mx-auto text-center">
         <motion.div
           className="flex items-center justify-center gap-4 mb-6"
@@ -87,17 +93,17 @@ const FooterSection = () => {
           viewport={{ once: true }}
         >
           {[
-            { href: "https://linkedin.com", icon: Linkedin },
-            { href: "https://github.com", icon: Github },
-            { href: "mailto:samrobinsinghe303@gmail.com", icon: Mail },
+            { href: "https://linkedin.com", icon: Linkedin, color: "hsl(var(--primary))" },
+            { href: "https://github.com", icon: Github, color: "hsl(var(--accent))" },
+            { href: "mailto:samrobinsinghe303@gmail.com", icon: Mail, color: "hsl(var(--warm))" },
           ].map((s) => (
             <motion.a
               key={s.href}
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-colors"
-              whileHover={{ scale: 1.2, y: -2 }}
+              className="p-2.5 rounded-lg text-muted-foreground transition-colors"
+              whileHover={{ scale: 1.2, y: -2, color: s.color }}
             >
               <s.icon className="w-5 h-5" />
             </motion.a>
@@ -108,10 +114,15 @@ const FooterSection = () => {
         </p>
       </div>
 
-      {/* Back to top */}
+      {/* Gradient back to top */}
       <motion.a
         href="#"
-        className="fixed bottom-6 right-6 p-3 rounded-full glass border border-border hover:border-primary transition-all z-40"
+        className="fixed bottom-6 right-6 p-3 rounded-full z-40 transition-all"
+        style={{
+          background: "linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--accent) / 0.15))",
+          border: "1px solid hsl(var(--primary) / 0.3)",
+          backdropFilter: "blur(12px)",
+        }}
         initial={{ opacity: 0, scale: 0 }}
         animate={showTop ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
         whileHover={{ scale: 1.1, boxShadow: "0 0 20px hsl(var(--glow) / 0.3)" }}

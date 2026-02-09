@@ -13,20 +13,36 @@ const HeroSection = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Parallax Background */}
       <motion.div className="absolute inset-0" style={{ y: bgY }}>
-        <img src={heroBg} alt="" className="w-full h-full object-cover opacity-40 scale-110" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+        <img src={heroBg} alt="" className="w-full h-full object-cover opacity-30 scale-110" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
       </motion.div>
+
+      {/* Colored ambient blurs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full opacity-[0.07] blur-[100px]"
+          style={{ background: "hsl(var(--primary))" }}
+        />
+        <div
+          className="absolute bottom-[20%] right-[10%] w-[400px] h-[400px] rounded-full opacity-[0.06] blur-[100px]"
+          style={{ background: "hsl(var(--accent))" }}
+        />
+        <div
+          className="absolute top-[50%] left-[50%] w-[300px] h-[300px] rounded-full opacity-[0.04] blur-[80px]"
+          style={{ background: "hsl(var(--warm))" }}
+        />
+      </div>
 
       {/* Animated particles */}
       <ParticleField count={50} />
 
       {/* Radial glow behind text */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full"
         style={{
-          background: "radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, hsl(var(--primary) / 0.06) 0%, hsl(var(--accent) / 0.03) 50%, transparent 70%)",
         }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
 
@@ -37,10 +53,11 @@ const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <motion.p
-            className="font-mono text-primary tracking-widest uppercase text-sm mb-4"
+            className="font-mono tracking-widest uppercase text-sm mb-4"
+            style={{ color: "hsl(var(--accent))" }}
             initial={{ opacity: 0, letterSpacing: "0em" }}
             animate={{ opacity: 1, letterSpacing: "0.2em" }}
             transition={{ duration: 1.2, delay: 0.3 }}
@@ -108,8 +125,8 @@ const HeroSection = () => {
           className="flex items-center justify-center gap-4 mt-8"
         >
           {[
-            { href: "https://linkedin.com", icon: Linkedin },
-            { href: "https://github.com", icon: Github },
+            { href: "https://linkedin.com", icon: Linkedin, color: "hsl(var(--primary))" },
+            { href: "https://github.com", icon: Github, color: "hsl(var(--accent))" },
           ].map((social, i) => (
             <motion.a
               key={social.href}
@@ -119,7 +136,8 @@ const HeroSection = () => {
               className="p-3 rounded-lg border border-border hover:border-primary transition-all duration-300"
               whileHover={{
                 scale: 1.15,
-                boxShadow: "0 0 20px hsl(var(--glow) / 0.3)",
+                boxShadow: `0 0 20px ${social.color}40`,
+                borderColor: social.color,
               }}
               whileTap={{ scale: 0.9 }}
               initial={{ opacity: 0, y: 20 }}
