@@ -55,6 +55,8 @@ export default {
         "glow-muted": "hsl(var(--glow-muted))",
         surface: "hsl(var(--surface))",
         "surface-hover": "hsl(var(--surface-hover))",
+        warm: "hsl(var(--warm))",
+        "warm-glow": "hsl(var(--warm-glow))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
