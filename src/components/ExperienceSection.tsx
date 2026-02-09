@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Briefcase } from "lucide-react";
+import SectionHeading from "./SectionHeading";
 
 const experiences = [
   {
@@ -39,37 +40,59 @@ const ExperienceSection = () => {
   return (
     <section id="experience" className="section-padding">
       <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="font-mono text-primary text-sm tracking-widest uppercase mb-3">Experience</h2>
-          <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-12">Work History</h3>
-        </motion.div>
+        <SectionHeading label="Experience" title="Work History" />
 
         <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-[19px] top-2 bottom-2 w-px bg-border" />
+          {/* Animated timeline line */}
+          <motion.div
+            className="absolute left-[19px] top-2 bottom-2 w-px"
+            style={{ background: "linear-gradient(to bottom, hsl(var(--primary) / 0.5), hsl(var(--border)), hsl(var(--primary) / 0.5))" }}
+            initial={{ scaleY: 0, originY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          />
 
           <div className="space-y-12">
             {experiences.map((exp, index) => (
               <motion.div
                 key={exp.company}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
+                transition={{
+                  delay: index * 0.2,
+                  duration: 0.7,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
                 className="relative pl-12"
               >
-                {/* Timeline dot */}
-                <div className="absolute left-2.5 top-1 w-4 h-4 rounded-full bg-primary/20 border-2 border-primary" />
+                {/* Animated timeline dot */}
+                <motion.div
+                  className="absolute left-2.5 top-1 w-4 h-4 rounded-full border-2 border-primary"
+                  initial={{ scale: 0, backgroundColor: "hsl(var(--background))" }}
+                  whileInView={{ scale: 1, backgroundColor: "hsl(var(--primary) / 0.2)" }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.2 + 0.3, type: "spring", stiffness: 200 }}
+                >
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-primary/30"
+                    animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: index * 0.5 }}
+                  />
+                </motion.div>
 
-                <div className="glass rounded-xl p-6 hover:glow-border transition-all duration-300">
+                <motion.div
+                  className="glass-hover rounded-xl p-6"
+                  whileHover={{ x: 4 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-4">
                     <div>
                       <h4 className="text-foreground font-semibold text-lg flex items-center gap-2">
-                        <Briefcase className="w-4 h-4 text-primary" />
+                        <motion.div whileHover={{ rotate: 15 }}>
+                          <Briefcase className="w-4 h-4 text-primary" />
+                        </motion.div>
                         {exp.company}
                       </h4>
                       <p className="text-primary font-mono text-sm">{exp.role}</p>
@@ -78,13 +101,20 @@ const ExperienceSection = () => {
                   </div>
                   <ul className="space-y-2">
                     {exp.points.map((point, i) => (
-                      <li key={i} className="text-muted-foreground text-sm flex gap-2">
+                      <motion.li
+                        key={i}
+                        className="text-muted-foreground text-sm flex gap-2"
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.2 + i * 0.08 }}
+                      >
                         <span className="text-primary mt-1.5 shrink-0">▹</span>
                         <span>{point}</span>
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>
