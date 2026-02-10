@@ -109,7 +109,7 @@ const skillPill = {
     opacity: 1,
     scale: 1,
     rotateY: 0,
-    transition: { type: "spring", stiffness: 200, damping: 15 },
+    transition: { type: "spring" as const, stiffness: 200, damping: 15 },
   },
 };
 
