@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { Mail, Linkedin, Github, ArrowUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Linkedin, Github, ArrowUp, Menu, X, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const LeetCodeIconSmall = () => (
@@ -22,12 +22,22 @@ const HackerRankIconSmall = () => (
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close mobile menu on scroll
+  useEffect(() => {
+    if (mobileOpen) {
+      const close = () => setMobileOpen(false);
+      window.addEventListener("scroll", close);
+      return () => window.removeEventListener("scroll", close);
+    }
+  }, [mobileOpen]);
 
   const links = [
     { href: "#about", label: "About" },
@@ -36,6 +46,7 @@ const Navbar = () => {
     { href: "#projects", label: "Projects" },
     { href: "#publications", label: "Research" },
     { href: "#awards", label: "Awards" },
+    { href: "#contact", label: "Contact" },
   ];
 
   return (
@@ -58,6 +69,8 @@ const Navbar = () => {
         >
           SRS<span className="text-primary">.</span>
         </motion.a>
+
+        {/* Desktop links */}
         <div className="hidden md:flex items-center gap-6">
           {links.map((link, i) => (
             <motion.a
@@ -73,19 +86,92 @@ const Navbar = () => {
             </motion.a>
           ))}
         </div>
-        <motion.a
-          href="mailto:samrobinsinghe303@gmail.com"
-          className="text-sm px-4 py-1.5 rounded-lg font-semibold transition-all"
-          style={{
-            background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))",
-            color: "hsl(var(--primary-foreground))",
-          }}
-          whileHover={{ scale: 1.05, boxShadow: "0 0 25px hsl(var(--glow) / 0.3)" }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Contact
-        </motion.a>
+
+        <div className="flex items-center gap-3">
+          {/* Resume download in nav */}
+          <motion.a
+            href="components/Sam Robin Singh_CV.pdf"
+            download
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm px-3.5 py-1.5 rounded-lg font-medium transition-all border"
+            style={{
+              borderColor: "hsl(var(--primary) / 0.3)",
+              color: "hsl(var(--primary))",
+            }}
+            whileHover={{
+              scale: 1.05,
+              borderColor: "hsl(var(--primary) / 0.6)",
+              boxShadow: "0 0 20px hsl(var(--glow) / 0.2)",
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Download className="w-3.5 h-3.5" />
+            Resume
+          </motion.a>
+
+          {/* Contact CTA */}
+          <motion.a
+            href="mailto:samrobinsinghe303@gmail.com"
+            className="hidden md:inline-flex text-sm px-4 py-1.5 rounded-lg font-semibold transition-all"
+            style={{
+              background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))",
+              color: "hsl(var(--primary-foreground))",
+            }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 25px hsl(var(--glow) / 0.3)" }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Hire Me
+          </motion.a>
+
+          {/* Mobile hamburger */}
+          <motion.button
+            className="md:hidden p-2 rounded-lg text-foreground"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            whileTap={{ scale: 0.9 }}
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </motion.button>
+        </div>
       </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden glass border-t border-border/50 overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-1">
+              {links.map((link, i) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="block py-2.5 px-3 rounded-lg text-sm font-mono text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+              <motion.a
+                href="components/Sam Robin Singh_CV.pdf"
+                download
+                className="flex items-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold text-primary"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: links.length * 0.05 }}
+              >
+                <Download className="w-4 h-4" />
+                Download Resume
+              </motion.a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 };
@@ -100,19 +186,29 @@ const FooterSection = () => {
   }, []);
 
   return (
-    <footer className="relative py-12 px-4">
+    <footer className="relative py-16 px-4">
       <div className="section-divider absolute top-0 left-[10%] right-[10%]" />
 
       <div className="max-w-4xl mx-auto text-center">
+        {/* Logo */}
         <motion.div
-          className="flex items-center justify-center gap-4 mb-6"
+          className="text-3xl font-bold mb-6"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          SRS<span className="text-primary">.</span>
+        </motion.div>
+
+        <motion.div
+          className="flex items-center justify-center gap-4 mb-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-        {[
-            { href: "https://linkedin.com", icon: Linkedin, color: "hsl(var(--primary))" },
-            { href: "https://github.com", icon: Github, color: "hsl(var(--accent))" },
+          {[
+            { href: "https://www.linkedin.com/in/sam-robin-singh-e-17a76324a/", icon: Linkedin, color: "hsl(var(--primary))" },
+            { href: "https://github.com/SamRobinSingh", icon: Github, color: "hsl(var(--accent))" },
             { href: "mailto:samrobinsinghe303@gmail.com", icon: Mail, color: "hsl(var(--warm))" },
           ].map((s) => (
             <motion.a
@@ -120,36 +216,70 @@ const FooterSection = () => {
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-lg text-muted-foreground transition-colors"
-              whileHover={{ scale: 1.2, y: -2, color: s.color }}
+              className="p-3 rounded-xl text-muted-foreground transition-all border"
+              style={{ borderColor: "hsl(var(--border) / 0.5)" }}
+              whileHover={{
+                scale: 1.15,
+                y: -3,
+                color: s.color,
+                borderColor: s.color,
+                boxShadow: `0 0 20px ${s.color}30`,
+              }}
             >
               <s.icon className="w-5 h-5" />
             </motion.a>
           ))}
           {/* Coding profiles */}
           {[
-            { href: "https://leetcode.com/u/Sam_Robin_Singh", icon: LeetCodeIconSmall, color: "hsl(37, 100%, 50%)" },
-            { href: "https://www.codechef.com/users/sam_robin", icon: CodeChefIconSmall, color: "hsl(16, 80%, 55%)" },
-            { href: "https://www.hackerrank.com/profile/samrobinsinghe30", icon: HackerRankIconSmall, color: "hsl(145, 70%, 45%)" },
+            { href: "https://leetcode.com/u/ss8764628/", icon: LeetCodeIconSmall, color: "hsl(37, 100%, 50%)" },
+            { href: "https://www.codechef.com/users/samss8764628", icon: CodeChefIconSmall, color: "hsl(16, 80%, 55%)" },
+            { href: "https://www.hackerrank.com/profile/ss8764628", icon: HackerRankIconSmall, color: "hsl(145, 70%, 45%)" },
           ].map((s) => (
             <motion.a
               key={s.href}
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-lg text-muted-foreground transition-colors"
-              whileHover={{ scale: 1.2, y: -2, color: s.color }}
+              className="p-3 rounded-xl text-muted-foreground transition-all border"
+              style={{ borderColor: "hsl(var(--border) / 0.5)" }}
+              whileHover={{
+                scale: 1.15,
+                y: -3,
+                color: s.color,
+                borderColor: s.color,
+                boxShadow: `0 0 20px ${s.color}30`,
+              }}
             >
               <s.icon />
             </motion.a>
           ))}
         </motion.div>
+
+        {/* Resume link in footer */}
+        <motion.a
+          href="components/Sam Robin Singh_CV.pdf"
+          download
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-mono text-primary border mb-8 transition-all"
+          style={{ borderColor: "hsl(var(--primary) / 0.25)" }}
+          whileHover={{
+            scale: 1.05,
+            boxShadow: "0 0 25px hsl(var(--glow) / 0.2)",
+            borderColor: "hsl(var(--primary) / 0.5)",
+          }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          <Download className="w-4 h-4" />
+          Download Resume
+        </motion.a>
+
         <p className="text-muted-foreground text-sm font-mono">
-          © 2025 Sam Robin Singh E. Built with passion for AI.
+          © {new Date().getFullYear()} Sam Robin Singh E.
         </p>
       </div>
 
-      {/* Gradient back to top */}
+      {/* Back to top */}
       <motion.a
         href="#"
         className="fixed bottom-6 right-6 p-3 rounded-full z-40 transition-all"

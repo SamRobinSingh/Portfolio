@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Mail, Phone, MapPin, Github, Linkedin, ChevronDown } from "lucide-react";
+import { Mail, Phone, MapPin, Github, Linkedin, ChevronDown, Download, Sparkles } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import resumePdf from "./Sam Robin Singh_CV.pdf";
 import ParticleField from "./ParticleField";
 import CodingProfileIcon from "./CodingProfileIcon";
 
@@ -27,6 +28,34 @@ const codingProfiles = [
   { href: "https://www.codechef.com/users/sam_robin", label: "CodeChef", icon: <CodeChefIcon />, color: "hsl(16, 80%, 55%)" },
   { href: "https://www.hackerrank.com/profile/samrobinsinghe30", label: "HackerRank", icon: <HackerRankIcon />, color: "hsl(145, 70%, 45%)" },
 ];
+
+// Floating 3D geometric shapes component
+const FloatingShape = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
+  <motion.div
+    className="absolute pointer-events-none"
+    style={{
+      left: x,
+      top: y,
+      width: size,
+      height: size,
+      border: "1px solid hsl(var(--primary) / 0.15)",
+      borderRadius: size > 30 ? "12px" : "50%",
+    }}
+    initial={{ opacity: 0, rotate: 0, scale: 0 }}
+    animate={{
+      opacity: [0, 0.4, 0],
+      rotate: [0, rotation, rotation * 2],
+      scale: [0.5, 1, 0.5],
+      y: [0, -30, 0],
+    }}
+    transition={{
+      duration: 8,
+      delay,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+  />
+);
 
 const HeroSection = () => {
   const { scrollY } = useScroll();
@@ -58,6 +87,13 @@ const HeroSection = () => {
         />
       </div>
 
+      {/* Floating 3D shapes */}
+      <FloatingShape delay={0} x="15%" y="20%" size={40} rotation={180} />
+      <FloatingShape delay={2} x="80%" y="25%" size={25} rotation={-120} />
+      <FloatingShape delay={4} x="70%" y="70%" size={35} rotation={90} />
+      <FloatingShape delay={1} x="10%" y="65%" size={20} rotation={-180} />
+      <FloatingShape delay={3} x="85%" y="55%" size={30} rotation={150} />
+
       {/* Animated particles */}
       <ParticleField count={50} />
 
@@ -80,15 +116,23 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] as const }}
         >
-          <motion.p
-            className="font-mono tracking-widest uppercase text-sm mb-4"
-            style={{ color: "hsl(var(--accent))" }}
-            initial={{ opacity: 0, letterSpacing: "0em" }}
-            animate={{ opacity: 1, letterSpacing: "0.2em" }}
-            transition={{ duration: 1.2, delay: 0.3 }}
+          {/* Badge */}
+          <motion.div
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 border"
+            style={{
+              background: "hsl(var(--primary) / 0.08)",
+              borderColor: "hsl(var(--primary) / 0.2)",
+            }}
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            AI & Machine Learning Engineer
-          </motion.p>
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <span className="font-mono text-xs tracking-wider uppercase text-primary">
+              AI & Machine Learning Engineer
+            </span>
+          </motion.div>
+
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
             <motion.span
               className="text-gradient-animated inline-block"
@@ -119,6 +163,64 @@ const HeroSection = () => {
           </motion.p>
         </motion.div>
 
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.85 }}
+          className="flex flex-wrap items-center justify-center gap-4 mb-8"
+        >
+          {/* Resume Download */}
+          <motion.a
+            href={resumePdf}
+            download
+            className="group relative inline-flex items-center gap-2.5 px-7 py-3 rounded-xl font-semibold text-sm overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))",
+              color: "hsl(var(--primary-foreground))",
+            }}
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 0 40px hsl(var(--glow) / 0.4), 0 10px 50px hsl(var(--glow) / 0.2)",
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {/* Shimmer effect on button */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: "linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0.15) 50%, transparent 55%)",
+                backgroundSize: "250% 100%",
+              }}
+              animate={{ backgroundPosition: ["-100% 0", "250% 0"] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
+            />
+            <Download className="w-4 h-4 relative z-10" />
+            <span className="relative z-10">Download Resume</span>
+          </motion.a>
+
+          {/* Contact button */}
+          <motion.a
+            href="#contact"
+            className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-sm border transition-all"
+            style={{
+              borderColor: "hsl(var(--primary) / 0.3)",
+              color: "hsl(var(--primary))",
+              background: "hsl(var(--primary) / 0.05)",
+            }}
+            whileHover={{
+              scale: 1.05,
+              borderColor: "hsl(var(--primary) / 0.6)",
+              boxShadow: "0 0 25px hsl(var(--glow) / 0.15)",
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Mail className="w-4 h-4" />
+            Get In Touch
+          </motion.a>
+        </motion.div>
+
+        {/* Contact info row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -143,7 +245,7 @@ const HeroSection = () => {
           </span>
         </motion.div>
 
-        {/* Social links */}
+        {/* Social and Coding Links */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -151,8 +253,8 @@ const HeroSection = () => {
           className="flex items-center justify-center gap-3 mt-8"
         >
           {[
-            { href: "https://linkedin.com", icon: Linkedin, color: "hsl(var(--primary))" },
-            { href: "https://github.com", icon: Github, color: "hsl(var(--accent))" },
+            { href: "https://www.linkedin.com/in/sam-robin-singh-e-17a76324a/", icon: Linkedin, color: "hsl(var(--primary))" },
+            { href: "https://github.com/SamRobinSingh", icon: Github, color: "hsl(var(--accent))" },
           ].map((social, i) => (
             <motion.a
               key={social.href}
@@ -177,7 +279,7 @@ const HeroSection = () => {
           {/* Divider */}
           <div className="w-px h-8 mx-1" style={{ background: "linear-gradient(to bottom, transparent, hsl(var(--border)), transparent)" }} />
 
-          {/* Coding profiles with 3D animation */}
+          {/* Coding profiles with 3D animation from your profiles array */}
           {codingProfiles.map((profile, i) => (
             <CodingProfileIcon
               key={profile.label}
@@ -190,6 +292,7 @@ const HeroSection = () => {
           ))}
         </motion.div>
 
+        {/* Scroll Indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

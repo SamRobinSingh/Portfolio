@@ -2,10 +2,13 @@ import { motion } from "framer-motion";
 import { Send, User, Mail, MessageSquare } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import { useState } from "react";
+import { useToast } from "../hooks/use-toast";
 
 const ContactSection = () => {
+  const { toast } = useToast();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -17,9 +20,42 @@ const ContactSection = () => {
 
   const handleMouseLeave = () => setMousePos({ x: 0, y: 0 });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    window.location.href = `mailto:samrobinsinghe303@gmail.com?subject=Contact from ${formData.name}&body=${encodeURIComponent(formData.message)}%0A%0AFrom: ${formData.email}`;
+    setIsSubmitting(true);
+
+    // YOUR GOOGLE APPS SCRIPT WEB APP URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSfCs3YQ-y36PJWq1QJC3Nsa75KX70-DBKr-3-zQnuwNbLhnPoQz2mXCzRabpDi4zw7A/exec";
+
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors", // Required for cross-origin Apps Script execution
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Since mode is 'no-cors', we won't get a standard response object, 
+      // but if the catch block isn't triggered, the request was sent.
+      toast({
+        title: "Message Sent!",
+        description: "Your information has been saved to the spreadsheet and an email notification was sent.",
+      });
+
+      // Clear the form
+      setFormData({ name: "", email: "", message: "" });
+      
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "There was a problem connecting to the service. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputVariant = {
@@ -36,7 +72,7 @@ const ContactSection = () => {
     <section id="contact" className="section-padding relative overflow-hidden">
       <div className="section-divider absolute top-0 left-[10%] right-[10%]" />
 
-      {/* Ambient background */}
+      {/* Ambient animated background blobs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div
           className="absolute top-[20%] right-[10%] w-[500px] h-[500px] rounded-full opacity-[0.05] blur-[120px]"
@@ -73,7 +109,7 @@ const ContactSection = () => {
               rotateX: -mousePos.y * 0.5,
             }}
           >
-            {/* Glow border */}
+            {/* Background Glow layer */}
             <div
               className="absolute inset-0 rounded-2xl opacity-50"
               style={{
@@ -82,7 +118,7 @@ const ContactSection = () => {
             />
 
             <div className="relative glass rounded-2xl p-8 md:p-12">
-              {/* Shimmer */}
+              {/* Interactive Shimmer Effect */}
               <motion.div
                 className="absolute inset-0 rounded-2xl pointer-events-none"
                 style={{
@@ -94,7 +130,7 @@ const ContactSection = () => {
               />
 
               <div className="relative z-10 grid md:grid-cols-2 gap-10">
-                {/* Left: Text */}
+                {/* Left Side: Text and Contact Info */}
                 <div>
                   <motion.h3
                     className="text-2xl md:text-3xl font-bold text-foreground mb-4"
@@ -103,8 +139,7 @@ const ContactSection = () => {
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
                   >
-                    Let's Build Something{" "}
-                    <span className="text-gradient-animated">Amazing</span>
+                    Let's Build Something <span className="text-gradient-animated">Amazing</span>
                   </motion.h3>
                   <motion.p
                     className="text-muted-foreground leading-relaxed mb-6"
@@ -113,11 +148,9 @@ const ContactSection = () => {
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 }}
                   >
-                    I'm always open to discussing AI/ML projects, research collaborations,
-                    or opportunities to build intelligent solutions. Fill in your details and let's connect!
+                    Your message will be sent directly to my private Google Sheet and I will receive an instant notification in my Gmail.
                   </motion.p>
 
-                  {/* Info cards */}
                   <div className="space-y-3">
                     {[
                       { label: "Email", value: "samrobinsinghe303@gmail.com", color: "hsl(var(--primary))" },
@@ -140,7 +173,7 @@ const ContactSection = () => {
                   </div>
                 </div>
 
-                {/* Right: Form */}
+                {/* Right Side: Contact Form */}
                 <motion.form
                   onSubmit={handleSubmit}
                   className="space-y-4"
@@ -148,7 +181,7 @@ const ContactSection = () => {
                   whileInView="show"
                   viewport={{ once: true }}
                 >
-                  {/* Name */}
+                  {/* Name Input */}
                   <motion.div variants={inputVariant} custom={0} className="relative group">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-1.5 block">
                       Your Name
@@ -170,7 +203,7 @@ const ContactSection = () => {
                     </div>
                   </motion.div>
 
-                  {/* Email */}
+                  {/* Email Input */}
                   <motion.div variants={inputVariant} custom={1} className="relative group">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-1.5 block">
                       Your Email
@@ -192,7 +225,7 @@ const ContactSection = () => {
                     </div>
                   </motion.div>
 
-                  {/* Message */}
+                  {/* Message Textarea */}
                   <motion.div variants={inputVariant} custom={2} className="relative group">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-1.5 block">
                       Message
@@ -214,12 +247,13 @@ const ContactSection = () => {
                     </div>
                   </motion.div>
 
-                  {/* Submit */}
+                  {/* Submit Button */}
                   <motion.button
                     type="submit"
+                    disabled={isSubmitting}
                     variants={inputVariant}
                     custom={3}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all cursor-pointer disabled:opacity-50"
                     style={{
                       background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))",
                       color: "hsl(var(--primary-foreground))",
@@ -231,7 +265,7 @@ const ContactSection = () => {
                     whileTap={{ scale: 0.97 }}
                   >
                     <Send className="w-4 h-4" />
-                    Send Message
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </motion.button>
                 </motion.form>
               </div>
