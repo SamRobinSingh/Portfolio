@@ -7,11 +7,13 @@ import ProjectsSection from "@/components/ProjectsSection";
 import PublicationsSection from "@/components/PublicationsSection";
 import AwardsSection from "@/components/AwardsSection";
 import ContactSection from "@/components/ContactSection";
+import FloatingRobot from "@/components/FloatingRobot";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background transition-colors duration-500">
       <Navbar />
+      <FloatingRobot />
       <HeroSection />
       <AboutSection />
       <SkillsSection />

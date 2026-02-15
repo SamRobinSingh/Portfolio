@@ -4,6 +4,7 @@ import heroBg from "@/assets/hero-bg.jpg";
 import resumePdf from "./Sam Robin Singh_CV.pdf";
 import ParticleField from "./ParticleField";
 import CodingProfileIcon from "./CodingProfileIcon";
+import TypingAnimation from "./TypingAnimation";
 
 const LeetCodeIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -29,7 +30,7 @@ const codingProfiles = [
   { href: "https://www.hackerrank.com/profile/samrobinsinghe30", label: "HackerRank", icon: <HackerRankIcon />, color: "hsl(145, 70%, 45%)" },
 ];
 
-// Floating 3D geometric shapes component
+// Floating 3D geometric shapes
 const FloatingShape = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
   <motion.div
     className="absolute pointer-events-none"
@@ -116,7 +117,6 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] as const }}
         >
-          {/* Badge */}
           <motion.div
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 border"
             style={{
@@ -129,7 +129,7 @@ const HeroSection = () => {
           >
             <Sparkles className="w-3.5 h-3.5 text-primary" />
             <span className="font-mono text-xs tracking-wider uppercase text-primary">
-              AI & Machine Learning Engineer
+              <TypingAnimation />
             </span>
           </motion.div>
 
@@ -138,7 +138,7 @@ const HeroSection = () => {
               className="text-gradient-animated inline-block"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
             >
               Sam Robin
             </motion.span>
@@ -220,11 +220,10 @@ const HeroSection = () => {
           </motion.a>
         </motion.div>
 
-        {/* Contact info row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
+          transition={{ duration: 0.8, delay: 0.95 }}
           className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground"
         >
           <motion.a
@@ -245,7 +244,7 @@ const HeroSection = () => {
           </span>
         </motion.div>
 
-        {/* Social and Coding Links */}
+        {/* Social links */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -279,7 +278,7 @@ const HeroSection = () => {
           {/* Divider */}
           <div className="w-px h-8 mx-1" style={{ background: "linear-gradient(to bottom, transparent, hsl(var(--border)), transparent)" }} />
 
-          {/* Coding profiles with 3D animation from your profiles array */}
+          {/* Coding profiles with 3D animation */}
           {codingProfiles.map((profile, i) => (
             <CodingProfileIcon
               key={profile.label}
@@ -292,7 +291,6 @@ const HeroSection = () => {
           ))}
         </motion.div>
 
-        {/* Scroll Indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
